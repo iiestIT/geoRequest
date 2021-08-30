@@ -10,21 +10,21 @@ import (
 )
 
 var (
-	BASEURL = "http://api.ipstack.com/"
+	BASEURL  = "http://api.ipstack.com/"
 	SBASEURL = "https://api.ipstack.com/"
 )
 
 type ApiWrapper struct {
 	AccessKey string
-	Https bool
-	Output string
+	Https     bool
+	Output    string
 }
 
 func (w ApiWrapper) RequestAndProcess(ipAddr []string, security int, language string, raw bool) error {
 	var (
-		baseUrl string
-		url string
-		jsonBody baseResponse
+		baseUrl      string
+		url          string
+		jsonBody     baseResponse
 		jsonBodyBulk []baseResponse
 	)
 
@@ -64,14 +64,14 @@ func (w ApiWrapper) RequestAndProcess(ipAddr []string, security int, language st
 		if err != nil {
 			return err
 		}
-		if !raw{
+		if !raw {
 			for _, i := range jsonBodyBulk {
 				w.printResults(i, url)
 
 			}
 			return nil
 		} else {
-			err = w.printBulkRaw(jsonBodyBulk)
+			err = w.printRaw(jsonBodyBulk)
 			if err != nil {
 				return err
 			}
@@ -106,16 +106,7 @@ func (w ApiWrapper) printResults(data baseResponse, url string) {
 	fmt.Println("API url: ", url)
 }
 
-func (w ApiWrapper) printRaw(data baseResponse) error {
-	p, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	fmt.Print(string(p))
-	return nil
-}
-
-func (w ApiWrapper) printBulkRaw(data []baseResponse) error {
+func (w ApiWrapper) printRaw(data interface{}) error {
 	p, err := json.Marshal(data)
 	if err != nil {
 		return err
